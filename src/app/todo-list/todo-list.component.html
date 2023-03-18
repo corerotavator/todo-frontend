@@ -1,10 +1,16 @@
-<div class="todo-list">
-    <input #newTodoInput type="text" placeholder="What needs to be done?" (keyup.enter)="addTodo(newTodoInput.value); newTodoInput.value = ''" />
-    <ul>
-      <li *ngFor="let todo of todos">
-        <input type="checkbox" [checked]="todo.completed" (change)="toggleTodo(todo)" />
-        <span [class.completed]="todo.completed">{{ todo.title }}</span>
-        <button (click)="deleteTodo(todo.id)">Delete</button>
+<div class="container">
+    <h1>To-Do List</h1>
+    <form (submit)="addTodo()">
+      <div class="input-group">
+        <input [(ngModel)]="newTodoTitle" name="newTodoTitle" class="form-control" placeholder="Enter a new to-do item...">
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </form>
+    <ul class="list-group mt-4">
+      <li *ngFor="let todo of todos" class="list-group-item d-flex justify-content-between align-items-center">
+        <input type="checkbox" [(ngModel)]="todo.completed" (change)="updateTodo(todo)" class="form-check-input">
+        <span>{{ todo.title }}</span>
+        <button (click)="deleteTodo(todo)" class="btn btn-danger btn-sm">Delete</button>
       </li>
     </ul>
   </div>

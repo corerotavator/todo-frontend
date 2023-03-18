@@ -1,40 +1,46 @@
 import { Component, OnInit } from '@angular/core';
-import { TodoItem, TodoService } from '../todo.service';
+import { TodoService } from '../todo.service';
 
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.css'],
+  styleUrls: ['./todo-list.component.css']
 })
 export class TodoListComponent implements OnInit {
-  todos: TodoItem[] = [];
+  todos: any[] = [];
+  newTodoTitle = '';
 
-  constructor(private todoService: TodoService) {}
+  constructor(private todoService: TodoService) { }
 
   ngOnInit(): void {
     this.fetchTodos();
   }
 
   fetchTodos(): void {
-    this.todoService.getTodos().subscribe((todos) => {
+    this.todoService.getTodos().subscribe(todos => {
       this.todos = todos;
     });
   }
 
-  addTodo(title: string): void {
-    this.todoService.createTodo(title).subscribe((newTodo) => {
-      this.todos.push(newTodo);
+  addTodo(): void {
+    if (!this.newTodoTitle.trim()) return;
+    this.todoService.createTodo(this.newTodoTitle).subscribe(todo => {
+      this.todos.push(todo);
+      this.newTodoTitle = '';
     });
   }
 
-  toggleTodo(todo: TodoItem): void {
-    todo.completed = !todo.completed;
-    this.todoService.updateTodo(todo).subscribe();
+  updateTodo(todo: any): void {
+    this.todoService.updateTodo( {
+      id: todo.id,
+      title: todo.title,
+      completed: todo.completed
+    }).subscribe();
   }
 
-  deleteTodo(id: number): void {
-    this.todoService.deleteTodo(id).subscribe(() => {
-      this.todos = this.todos.filter((todo) => todo.id !== id);
+  deleteTodo(todo: any): void {
+    this.todoService.deleteTodo(todo.id).subscribe(() => {
+      this.todos = this.todos.filter(t => t.id !== todo.id);
     });
   }
 }
